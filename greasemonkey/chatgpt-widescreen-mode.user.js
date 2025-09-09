@@ -250,6 +250,7 @@
 // @compatible          qq
 // @match               *://chatgpt.com/*
 // @match               *://poe.com/*
+// @match               *://cc2.plusai.me/*
 // @connect             cdn.jsdelivr.net
 // @connect             gm.chatgptwidescreen.com
 // @connect             raw.githubusercontent.com
@@ -299,7 +300,14 @@
             name: (() => { try { return GM_info.scriptHandler } catch (err) { return 'unknown' }})(),
             version: (() => { try { return GM_info.version } catch (err) { return 'unknown' }})()
         },
-        site: location.hostname.split('.').slice(-2, -1)[0], ui: {}
+        site: (() => {
+            const hostname = location.hostname;
+            // Map ChatGPT mirror sites to 'chatgpt'
+            if (hostname === 'chatgpt.com' || hostname.endsWith('.plusai.me')) return 'chatgpt';
+            // Default behavior for other sites
+            return hostname.split('.').slice(-2, -1)[0];
+        })(), 
+        ui: {}
     }
     env.browser.isPortrait = env.browser.isMobile && ( innerWidth < innerHeight )
     env.scriptManager.supportsTooltips = env.scriptManager.name == 'Tampermonkey'
